@@ -7,10 +7,9 @@ export default function BookScanner() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('1');
-  const [selectedCategory, setSelectedCategory] = useState('Fiction');
 
   const rooms = ['1', '2', '3'];
-  const categories = ['Fiction', 'Non-Fiction', 'Science', 'History', 'Biography', 'Self-Help', 'Reference', 'Other'];
+
 
   const fetchBookData = async (isbnValue) => {
     setLoading(true);
@@ -38,7 +37,7 @@ export default function BookScanner() {
           author: (book.authors && book.authors[0]) || 'Unknown Author',
           image_url: book.imageLinks?.thumbnail || '',
           room: selectedRoom,
-          category: selectedCategory,
+          category: (book.categories && book.categories[0]) || 'Unknown category',
           created_at: createdAt
         };
         
@@ -150,18 +149,8 @@ export default function BookScanner() {
                     {rooms.map(r => <option key={r} value={r}>Room {r}</option>)}
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">Category</label>
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-indigo-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white font-semibold text-gray-800 transition"
-                  >
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-
+      
+                
                 <div className="pt-6 border-t-2 border-indigo-100">
                   <p className="text-xs font-black text-gray-700 mb-3 uppercase tracking-widest">Export Options</p>
                   <button
@@ -171,19 +160,6 @@ export default function BookScanner() {
                   >
                     📥 Export JSON
                   </button>
-                </div>
-
-                <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 p-4 rounded-xl">
-                  <p className="font-black text-indigo-900 mb-3">💡 Fields Exported</p>
-                  <ul className="text-sm text-indigo-800 space-y-1 font-medium">
-                    <li>✓ ID (auto-incremented)</li>
-                    <li>✓ ISBN</li>
-                    <li>✓ Title</li>
-                    <li>✓ Description</li>
-                    <li>✓ Author</li>
-                    <li>✓ Image URL</li>
-                    <li>✓ Created At</li>
-                  </ul>
                 </div>
               </div>
             </div>
@@ -285,13 +261,12 @@ export default function BookScanner() {
                             </div>
                             <div>
                               <label className="text-xs font-bold text-gray-600 uppercase">Category</label>
-                              <select
-                                value={book.category}
-                                onChange={(e) => updateBook(book.id, 'category', e.target.value)}
-                                className="w-full px-2 py-1 border border-gray-300 rounded text-sm font-bold"
-                              >
-                                {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                              </select>
+                              <input
+                              type="text"
+                              value={book.category}
+                              onChange={(e) => updateBook(book.id, 'category', e.target.value)}
+                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                            />
                             </div>
                             <button
                               onClick={() => deleteBook(book.id)}
